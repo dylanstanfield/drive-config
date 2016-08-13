@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/dylanstanfield/drive-config/issues"
   },
-  "homepage": "https://github.com/dylanstanfield/drive-config#readme"
+  "homepage": "https://github.com/dylanstanfield/drive-config#readme",
+  "dependencies": {
+    "googleapis": "^12.2.0"
+  }
 }
