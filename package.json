@@ -1,0 +1,27 @@
+{
+  "name": "drive-config",
+  "version": "1.0.0",
+  "description": "A wrapper for mantaining config files on Google Drive",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dylanstanfield/drive-config.git"
+  },
+  "keywords": [
+    "google",
+    "drive",
+    "config",
+    "appdata",
+    "configuration",
+    "user"
+  ],
+  "author": "Dylan Stanfield <dylanstanfield@live.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dylanstanfield/drive-config/issues"
+  },
+  "homepage": "https://github.com/dylanstanfield/drive-config#readme"
+}
