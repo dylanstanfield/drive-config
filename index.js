@@ -1,6 +1,6 @@
 var drive = require('googleapis').drive('v3');
 
-class DriveConfig {
+class DriveConfigService {
 
     constructor(auth) {
         this.auth = auth;
@@ -99,6 +99,7 @@ class DriveConfig {
             });
         });
     }
+
 }
 
 function list(auth, files, nextPageToken) {
@@ -128,4 +129,4 @@ function list(auth, files, nextPageToken) {
     }
 }
 
-module.exports = DriveConfig;
+module.exports = DriveConfigService;

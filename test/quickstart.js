@@ -2,7 +2,7 @@ var fs = require('fs');
 var readline = require('readline');
 var google = require('googleapis');
 var googleAuth = require('google-auth-library');
-var DriveConfig = require('./../index');
+var DriveConfigService = require('./../index');
 
 // If modifying these scopes, delete your previously saved credentials
 // at ~/.credentials/drive-nodejs-quickstart.json
@@ -102,39 +102,20 @@ function storeToken(token) {
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
 function listFiles(auth) {
-    // var service = google.drive('v3');
-    // service.files.list({
-    //     auth: auth,
-    //     pageSize: 10,
-    //     fields: "nextPageToken, files(id, name)"
-    // }, function(err, response) {
-    //     if (err) {
-    //         console.log('The API returned an error: ' + err);
-    //         return;
-    //     }
-    //     var files = response.files;
-    //     if (files.length == 0) {
-    //         console.log('No files found.');
-    //     } else {
-    //         console.log('Files:');
-    //         for (var i = 0; i < files.length; i++) {
-    //             var file = files[i];
-    //             console.log('%s (%s)', file.name, file.id);
-    //         }
-    //     }
-    // });
 
-    var dc = new DriveConfig(auth);
+    var service = new DriveConfigService(auth);
+    var tempFileId;
 
-    dc.list().then(files => {
+    service.list().then(files => {
         console.log(files);
-        return dc.create('test.json', {hey: 'guy'});
+        return service.create('test.json', {hey: 'guy'});
     }).then(response => {
         console.log(response);
-        return dc.get(tmpFileId);
+        tempFileId = response.id;
+        return service.get(tempFileId);
     }).then(data => {
         console.log(data);
-        return dc.list();
+        return service.list();
     }).then(files => {
         console.log(files);
 
@@ -142,13 +123,13 @@ function listFiles(auth) {
 
         for(let file of files) {
             if(file.name == 'test.json') {
-                destroyCalls.push(dc.destroy(file.id));
+                destroyCalls.push(service.destroy(file.id));
             }
         }
 
         return Promise.all(destroyCalls);
     }).then(() => {
-        return dc.list();
+        return service.list();
     }).then(files => {
         console.log(files);
     })
