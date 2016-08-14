@@ -24,7 +24,7 @@ class DriveConfigService {
                     mimeType: 'application/json',
                     body: JSON.stringify(data)
                 },
-                fields: 'id, createdTime, modifiedTime',
+                fields: 'id, createdTime, modifiedTime, name, size',
                 auth: self.auth
             };
 
@@ -33,9 +33,11 @@ class DriveConfigService {
                 else {
                     resolve({
                         id: response.id,
+                        name: response.name,
                         data: data,
                         createdTime: response.createdTime,
-                        modifiedTime: response.modifiedTime
+                        modifiedTime: response.modifiedTime,
+                        size: response.size
                     });
                 }
             });
@@ -44,24 +46,39 @@ class DriveConfigService {
 
     get(fileId) {
 
+        let auth = this.auth;
+        let $metadata;
+
+        return getFileMetadata(auth, fileId).then(metadata => {
+            $metadata = metadata;
+            return getFileData(auth, fileId);
+        }).then(data => {
+            return {
+                id: fileId,
+                name: $metadata.name,
+                data: data,
+                createdTime: $metadata.createdTime,
+                modifiedTime: $metadata.modifiedTime,
+                size: $metadata.size
+            }
+        });
+
+    }
+
+    getByName(fileName) {
+
         let self = this;
 
-        return new Promise((resolve, reject) => {
-            let params = {
-                fileId: fileId,
-                alt: 'media',
-                auth: self.auth
-            };
+        return self.list().then(files => {
+            let callsForFileWithNameMatch = [];
 
-            drive.files.get(params, function(err, response) {
-                if(err) reject(err);
-                else {
-                    resolve({
-                        id: fileId,
-                        data: response
-                    });
-                }
-            });
+            for(let file of files) {
+                if(file.name === fileName) callsForFileWithNameMatch.push(self.get(file.id));
+            }
+
+            return Promise.all(callsForFileWithNameMatch);
+        }).then(files => {
+            return files;
         });
     }
 
@@ -77,6 +94,7 @@ class DriveConfigService {
                     mimeType: 'application/json',
                     body: JSON.stringify(data)
                 },
+                fields: "id, createdTime, modifiedTime, name, size",
                 auth: self.auth
             };
 
@@ -85,7 +103,11 @@ class DriveConfigService {
                 else {
                     resolve({
                         id: fileId,
-                        data: data
+                        name: response.name,
+                        data: data,
+                        createdTime: response.createdTime,
+                        modifiedTime: response.modifiedTime,
+                        size: response.size
                     });
                 }
             });
@@ -117,7 +139,7 @@ function list(auth, files, nextPageToken) {
         return new Promise((resolve, reject) => {
             var params = {
                 spaces: 'appDataFolder',
-                fields: 'nextPageToken, files(id, name, createdTime, modifiedTime)',
+                fields: 'nextPageToken, files(id, name, createdTime, modifiedTime, size)',
                 pageSize: 100,
                 auth: auth
             };
@@ -136,6 +158,40 @@ function list(auth, files, nextPageToken) {
     } else {
         return files;
     }
+}
+
+function getFileData(auth, fileId) {
+    return new Promise((resolve, reject) => {
+        let params = {
+            fileId: fileId,
+            alt: 'media',
+            auth: auth
+        };
+
+        drive.files.get(params, function(err, data) {
+            if(err) reject(err);
+            else {
+                resolve(data);
+            }
+        });
+    });
+}
+
+function getFileMetadata(auth, fileId) {
+    return new Promise((resolve, reject) => {
+        let params = {
+            fileId: fileId,
+            fields: "id, name, createdTime, modifiedTime, size",
+            auth: auth
+        };
+
+        drive.files.get(params, function(err, metadata) {
+            if(err) reject(err);
+            else {
+                resolve(metadata);
+            }
+        });
+    });
 }
 
 module.exports = DriveConfigService;

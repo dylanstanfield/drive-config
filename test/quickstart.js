@@ -116,9 +116,9 @@ function listFiles(auth) {
         response.data.fizz = 'buzz';
         return service.update(response.id, response.data);
     }).then(response => {
-        return service.get(response.id);
-    }).then(data => {
-        console.log(data);
+        return service.getByName(response.name);
+    }).then(file => {
+        console.log(file);
         return service.list();
     }).then(files => {
         console.log(files);
@@ -136,5 +136,7 @@ function listFiles(auth) {
         return service.list();
     }).then(files => {
         console.log(files);
-    })
+    }).catch(err => {
+        console.error(err.message);
+    });
 }
