@@ -24,14 +24,19 @@ class DriveConfigService {
                     mimeType: 'application/json',
                     body: JSON.stringify(data)
                 },
-                fields: 'id',
+                fields: 'id, createdTime, modifiedTime',
                 auth: self.auth
             };
 
             drive.files.create(params, function(err, response) {
                 if(err) reject(err);
                 else {
-                    resolve(response);
+                    resolve({
+                        id: response.id,
+                        data: data,
+                        createdTime: response.createdTime,
+                        modifiedTime: response.modifiedTime
+                    });
                 }
             });
         });
@@ -51,7 +56,10 @@ class DriveConfigService {
             drive.files.get(params, function(err, response) {
                 if(err) reject(err);
                 else {
-                    resolve(response);
+                    resolve({
+                        id: fileId,
+                        data: response
+                    });
                 }
             });
         });
@@ -75,7 +83,10 @@ class DriveConfigService {
             drive.files.update(params, function(err, response) {
                 if(err) reject(err);
                 else {
-                    resolve(response);
+                    resolve({
+                        id: fileId,
+                        data: data
+                    });
                 }
             });
         });
@@ -106,7 +117,7 @@ function list(auth, files, nextPageToken) {
         return new Promise((resolve, reject) => {
             var params = {
                 spaces: 'appDataFolder',
-                fields: 'nextPageToken, files(id, name)',
+                fields: 'nextPageToken, files(id, name, createdTime, modifiedTime)',
                 pageSize: 100,
                 auth: auth
             };

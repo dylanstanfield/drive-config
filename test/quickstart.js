@@ -104,19 +104,17 @@ function storeToken(token) {
 function listFiles(auth) {
 
     var service = new DriveConfigService(auth);
-    var tempFileId;
 
     service.list().then(files => {
         console.log(files);
         return service.create('quickstart-test-config.json', { foo: 'bar' });
     }).then(response => {
         console.log(response);
-        tempFileId = response.id;
-        return service.get(tempFileId);
-    }).then(data => {
-        console.log(data);
-        data.fizz = 'buzz';
-        return service.update(tempFileId, data);
+        return service.get(response.id);
+    }).then(response => {
+        console.log(response.data);
+        response.data.fizz = 'buzz';
+        return service.update(response.id, response.data);
     }).then(response => {
         return service.get(response.id);
     }).then(data => {
