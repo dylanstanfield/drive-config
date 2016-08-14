@@ -18,15 +18,13 @@ let auth = new googleAuth();
 let oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
 oauth2Client.credentials = user.creds;
 
-let service = new driveConfig(oauth2Client);
+let driveConfigClient = new driveConfig(oauth2Client);
 ```
 
 ### List
 Gets all files in a user's google drive for your application
 ```javascript
-let service = new driveConfig(oauth2Client);
-
-service.list().then(files => {
+driveConfigClient.list().then(files => {
     // do something with files
 }).catch(err => {
     // handle errors
@@ -36,9 +34,7 @@ service.list().then(files => {
 ### Create
 Makes a new files in the user's google drive
 ```javascript
-let service = new driveConfig(oauth2Client);
-
-service.create(fileName, data).then(file => {
+driveConfigClient.create(fileName, data).then(file => {
     // do something with the file
 }).catch(err => {
     // handle errors
@@ -48,9 +44,7 @@ service.create(fileName, data).then(file => {
 ### Get
 Gets a file from a user's google drive with a fileId
 ```javascript
-let service = new driveConfig(oauth2Client);
-
-service.get(fileId).then(file => {
+driveConfigClient.get(fileId).then(file => {
     // do something with the file
 }).catch(err => {
     // handle errors
@@ -60,9 +54,7 @@ service.get(fileId).then(file => {
 ### Get by name
 Gets a list of files that have a specific name
 ```javascript
-let service = new driveConfig(oauth2Client);
-
-service.getByName(fileName).then(files => {
+driveConfigClient.getByName(fileName).then(files => {
     // do something with the list of files
 }).catch(err => {
     // handle errors
@@ -72,9 +64,7 @@ service.getByName(fileName).then(files => {
 ### Update
 Updates a file on a user's google drive
 ```javascript
-let service = new driveConfig(oauth2Client);
-
-service.update(fileId, data).then(file => {
+driveConfigClient.update(fileId, data).then(file => {
     // do something with the file
 }).catch(err => {
     // handle errors
@@ -84,9 +74,7 @@ service.update(fileId, data).then(file => {
 ### Destroy
 Completely delete's a file from a user's google drive
 ```javascript
-let service = new driveConfig(oauth2Client);
-
-service.destory(fileId).then(() => {
+driveConfigClient.destory(fileId).then(() => {
     // do something next
 }).catch(err => {
     // handle errors
