@@ -1,7 +1,7 @@
 {
   "name": "drive-config",
   "version": "1.0.0",
-  "description": "A wrapper for mantaining config files on Google Drive",
+  "description": "A wrapper for mantaining json config files on Google Drive",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,7 +16,8 @@
     "config",
     "appdata",
     "configuration",
-    "user"
+    "user",
+    "json"
   ],
   "author": "Dylan Stanfield <dylanstanfield@live.com>",
   "license": "MIT",
