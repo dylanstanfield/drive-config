@@ -1,105 +1,131 @@
 var drive = require('googleapis').drive('v3');
 
-module.exports = function(options) {
+class DriveConfig {
 
-    this.list = function() {
-        return list(options.auth);
-    };
+    constructor(auth) {
+        this.auth = auth;
+    }
 
-    this.create = function(fileName, data) {
-        var metadata = {
-            'name': fileName,
-            'parents': [ 'appDataFolder']
-        };
+    list() {
+        return list(this.auth);
+    }
 
-        var media = {
-            mimeType: 'application/json',
-            body: JSON.stringify(data)
-        };
+    create(fileName, data) {
 
-        drive.files.create({
-            resource: metadata,
-            media: media,
-            fields: 'id',
-            auth: options.auth
-        }, function(err, response) {
-            if(err) throw err;
-            else {
-                console.log(response);
-            }
+        let self = this;
+
+        return new Promise((resolve, reject) => {
+            let params = {
+                resource: {
+                    'name': fileName,
+                    'parents': [ 'appDataFolder']
+                },
+                media: {
+                    mimeType: 'application/json',
+                    body: JSON.stringify(data)
+                },
+                fields: 'id',
+                auth: self.auth
+            };
+
+            drive.files.create(params, function(err, response) {
+                if(err) reject(err);
+                else {
+                    resolve(response);
+                }
+            });
         });
-    };
+    }
 
-    this.get = function(fileId) {
-        drive.files.get({
-            fileId: fileId,
-            alt: 'media',
-            auth: options.auth
-        }, function(err, data) {
-            if(err) throw err;
-            else {
-                console.log(data);
-            }
+    get(fileId) {
+
+        let self = this;
+
+        return new Promise((resolve, reject) => {
+            let params = {
+                fileId: fileId,
+                alt: 'media',
+                auth: self.auth
+            };
+
+            drive.files.get(params, function(err, response) {
+                if(err) reject(err);
+                else {
+                    resolve(response);
+                }
+            });
         });
-    };
+    }
 
-    this.update = function(fileId, data) {
-        drive.files.update(
-            {
+    update(fileId, data) {
+
+        let self = this;
+
+        return new Promise((resolve, reject) => {
+            let params = {
                 fileId: fileId,
                 uploadType: 'media',
                 media: {
                     mimeType: 'application/json',
                     body: JSON.stringify(data)
                 },
-                auth: options.auth
-            },
-            function(err, response) {
-                if(err) throw err;
+                auth: self.auth
+            };
+
+            drive.files.update(params, function(err, response) {
+                if(err) reject(err);
                 else {
-                    console.log(response);
+                    resolve(response);
                 }
-            }
-        );
-    };
-
-    this.delete = function(fileId) {
-        drive.files.delete({
-            fileId: fileId,
-            auth: options.auth
-        }, function(err, response) {
-            if(err) throw err;
-            else {
-                console.log(response);
-            }
+            });
         });
-    };
+    }
 
-    return this;
-};
+    destroy(fileId) {
+
+        let self = this;
+
+        return new Promise((resolve, reject) => {
+            let params = {
+                fileId: fileId,
+                auth: self.auth
+            };
+
+            drive.files.delete(params, function(err, response) {
+                if(err) reject(err);
+                else {
+                    resolve(response);
+                }
+            });
+        });
+    }
+}
 
 function list(auth, files, nextPageToken) {
     if(nextPageToken || files == undefined) {
 
-        var params = {
-            spaces: 'appDataFolder',
-            fields: 'nextPageToken, files(id, name)',
-            pageSize: 100,
-            auth: auth
-        };
+        return new Promise((resolve, reject) => {
+            var params = {
+                spaces: 'appDataFolder',
+                fields: 'nextPageToken, files(id, name)',
+                pageSize: 100,
+                auth: auth
+            };
 
-        if(nextPageToken) params.pageToken = nextPageToken;
+            if(nextPageToken) params.pageToken = nextPageToken;
 
-        drive.files.list(params, function(err, response) {
-            if(err) throw err;
-            else {
-                if(!files) files = [];
-                files.concat(response.files);
-                return list(auth, files, response.nextPageToken);
-            }
+            drive.files.list(params, function(err, response) {
+                if(err) reject(err);
+                else {
+                    if(files == undefined) files = [];
+                    files = files.concat(response.files);
+                    resolve(list(auth, files, response.nextPageToken));
+                }
+            });
         });
-
     } else {
         return files;
     }
 }
+
+module.exports = DriveConfig;
