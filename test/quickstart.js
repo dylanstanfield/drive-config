@@ -108,11 +108,17 @@ function listFiles(auth) {
 
     service.list().then(files => {
         console.log(files);
-        return service.create('test.json', {hey: 'guy'});
+        return service.create('quickstart-test-config.json', { foo: 'bar' });
     }).then(response => {
         console.log(response);
         tempFileId = response.id;
         return service.get(tempFileId);
+    }).then(data => {
+        console.log(data);
+        data.fizz = 'buzz';
+        return service.update(tempFileId, data);
+    }).then(response => {
+        return service.get(response.id);
     }).then(data => {
         console.log(data);
         return service.list();
@@ -122,7 +128,7 @@ function listFiles(auth) {
         let destroyCalls = [];
 
         for(let file of files) {
-            if(file.name == 'test.json') {
+            if(file.name == 'quickstart-test-config.json') {
                 destroyCalls.push(service.destroy(file.id));
             }
         }

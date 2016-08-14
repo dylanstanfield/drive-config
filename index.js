@@ -91,11 +91,9 @@ class DriveConfigService {
                 auth: self.auth
             };
 
-            drive.files.delete(params, function(err, response) {
+            drive.files.delete(params, function(err) {
                 if(err) reject(err);
-                else {
-                    resolve(response);
-                }
+                else resolve();
             });
         });
     }
