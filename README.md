@@ -7,7 +7,7 @@ We can take advantage of Google Drive's appdata folder to store a users config d
 ## Usage
 `This module is currently written with ES6 for Node 6+`
 
-#### Setup
+### Setup
 ```javascript
 var googleAuth = require('google-auth-library');
 let driveConfig = require('drive-config');
@@ -21,7 +21,7 @@ oauth2Client.credentials = user.creds;
 let service = new driveConfig(oauth2Client);
 ```
 
-#### List
+### List
 Gets all files in a user's google drive for your application
 ```javascript
 let service = new driveConfig(oauth2Client);
@@ -31,21 +31,9 @@ service.list().then(files => {
 }).catch(err => {
     // handle errors
 });
-
-// Resolves as an array of files
-[
-    {
-        id: String,
-        name: String,
-        data: Object,
-        createdTime: Datetime,
-        modifiedTime: Datetime,
-    },
-    ...
-]
 ```
 
-#### Create
+### Create
 Makes a new files in the user's google drive
 ```javascript
 let service = new driveConfig(oauth2Client);
@@ -55,13 +43,64 @@ service.create(fileName, data).then(file => {
 }).catch(err => {
     // handle errors
 });
+```
 
-// Resolves as a file
+### Get
+Gets a file from a user's google drive with a fileId
+```javascript
+let service = new driveConfig(oauth2Client);
+
+service.get(fileId).then(file => {
+    // do something with the file
+}).catch(err => {
+    // handle errors
+});
+```
+
+### Get by name
+Gets a list of files that have a specific name
+```javascript
+let service = new driveConfig(oauth2Client);
+
+service.getByName(fileName).then(files => {
+    // do something with the list of files
+}).catch(err => {
+    // handle errors
+});
+```
+
+### Update
+Updates a file on a user's google drive
+```javascript
+let service = new driveConfig(oauth2Client);
+
+service.update(fileId, data).then(file => {
+    // do something with the file
+}).catch(err => {
+    // handle errors
+});
+```
+
+### Destroy
+Completely delete's a file from a user's google drive
+```javascript
+let service = new driveConfig(oauth2Client);
+
+service.destory(fileId).then(() => {
+    // do something next
+}).catch(err => {
+    // handle errors
+});
+```
+
+### File Object
+```javascript
+// Example of what is returned from most methods
 {
     id: String,
     name: String,
     data: Object,
-    createdTime: Datetime,
-    modifiedTime: Datetime,
+    createdTime: Date,
+    modifiedTime: Date,
 }
 ```
