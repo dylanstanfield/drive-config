@@ -1,6 +1,8 @@
 # drive-config
 A npm module for maintaining user config files (in json) on Google Drive.
 
+`npm install drive-config`
+
 ## About
 We can take advantage of Google Drive's appdata folder to store a users config data for our application. The user cannot see these files, but can delete config data and revoke our app's access on their Drive by clicking the gear icon in the top right -> Settings -> Manage Apps -> Options Dropdown.
 

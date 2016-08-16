@@ -1,6 +1,6 @@
 {
   "name": "drive-config",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A wrapper for mantaining json config files on Google Drive",
   "main": "index.js",
   "scripts": {
