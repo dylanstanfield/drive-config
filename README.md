@@ -74,7 +74,7 @@ driveConfigClient.update(fileId, data).then(file => {
 ```
 
 ### Destroy
-Completely delete's a file from a user's google drive
+Completely deletes a file from a user's google drive
 ```javascript
 driveConfigClient.destory(fileId).then(() => {
     // do something next
